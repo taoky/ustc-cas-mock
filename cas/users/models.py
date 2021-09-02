@@ -98,6 +98,10 @@ class User(AbstractBaseUser):
         # 排序后的证件号码
         return list(self.id_set.order_by("-order").values_list('id', flat=True))
 
+    @property
+    def latest_id(self):
+        return self.id_set.order_by("-order").first().id
+
 
 class ID(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
