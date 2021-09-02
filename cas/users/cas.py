@@ -13,6 +13,8 @@ def custom_attributes(ticket):
         "ryzxztdm": user.ryzxztdm,
         "glzjh": "\t".join(user.ordered_ids)
     }
+    if ticket.login_ip:
+        ret["login_ip"] = ticket.login_ip
     if ticket.username:
         ret['login'] = ticket.username
     if ticket.username and ticket.username != user.gid:
