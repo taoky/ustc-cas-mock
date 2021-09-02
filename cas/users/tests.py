@@ -21,13 +21,13 @@ class CASTestCase(TestCase):
         self.check_ticket = "/serviceValidate"
         self.cas = '{http://www.yale.edu/tp/cas}'
 
-
-    def get_user_info(self):
+    def get_user_info(self, username=None):
+        if not username:
+            username = self.user.gid
         return {
-            'username': self.user.gid,
+            'username': username,
             'password': self.password,
         }
-
 
     def test_cas_login(self):
         response = self.client.get(self.login)
@@ -38,9 +38,26 @@ class CASTestCase(TestCase):
         self.client.logout()
         
     def test_cas_login_with_service(self):
+        username, attr = self.login_helper(self.usernames[0])
+        self.assertEqual(username, "testgid")  # 学号（输入的登录名）
+        self.assertEqual(attr.find(self.cas + 'gid').text.strip(), "testgid")  # GID
+        self.assertEqual(attr.find(self.cas + 'xbm').text.strip(), "1")
+        self.assertIsNotNone(attr.find(self.cas + 'logintime'))
+        self.assertEqual(attr.find(self.cas + 'ryzxztdm').text.strip(), "10")
+        self.assertEqual(attr.find(self.cas + 'ryfldm').text.strip(), "201030000")
+        # self.assertEqual(attr.find(self.cas + 'loginip').text.strip(), "127.0.0.1")
+        self.assertEqual(attr.find(self.cas + 'name').text.strip(), "testname")
+        self.assertEqual(attr.find(self.cas + 'login').text.strip(), "testgid")
+        self.assertEqual(attr.find(self.cas + 'zjhm').text.strip(), "SA21110000")
+        self.assertEqual(attr.find(self.cas + 'glzjh').text.strip(), "SA21110000\tPB17110000")
+        self.assertEqual(attr.find(self.cas + 'deptCode').text.strip(), "123")
+        self.assertEqual(attr.find(self.cas + 'email').text.strip(), "test@example.com")
+        self.client.logout()
+
+    def login_helper(self, username):
         url = self.login + "?" + urlencode({'service': self.service})
         self.assertEqual(url, "/login?service=http%3A%2F%2Fexample.com%2Flogin")
-        response = self.client.post(url, self.get_user_info())
+        response = self.client.post(url, self.get_user_info(username))
         self.assertEqual(response.status_code, 302)
         query = urlparse(response.url).query
         ticket = parse_qs(query)['ticket'][0]
@@ -50,16 +67,16 @@ class CASTestCase(TestCase):
         tree = ElementTree.fromstring(response.content)[0]
         self.assertEqual(tree.tag, self.cas + 'authenticationSuccess')
         attributes = tree.find('attributes')
-        self.assertEqual(tree.find(self.cas + 'user').text.strip(), "testgid")  # 学号（输入的登录名）
-        self.assertEqual(attributes.find(self.cas + 'gid').text.strip(), "testgid")  # GID
-        self.assertEqual(attributes.find(self.cas + 'xbm').text.strip(), "1")
-        self.assertIsNotNone(attributes.find(self.cas + 'logintime'))
-        self.assertEqual(attributes.find(self.cas + 'ryzxztdm').text.strip(), "10")
-        self.assertEqual(attributes.find(self.cas + 'ryfldm').text.strip(), "201030000")
-        # self.assertEqual(attributes.find(self.cas + 'loginip').text.strip(), "127.0.0.1")
-        self.assertEqual(attributes.find(self.cas + 'name').text.strip(), "testname")
-        self.assertEqual(attributes.find(self.cas + 'login').text.strip(), "testgid")
-        self.assertEqual(attributes.find(self.cas + 'zjhm').text.strip(), "SA21110000")
-        self.assertEqual(attributes.find(self.cas + 'glzjh').text.strip(), "SA21110000\tPB17110000")
-        self.assertEqual(attributes.find(self.cas + 'deptCode').text.strip(), "123")
-        self.assertEqual(attributes.find(self.cas + 'email').text.strip(), "test@example.com")
+        return tree.find(self.cas + 'user').text.strip(), attributes
+
+    def test_cas_login_zjhm(self):
+        username, attr = self.login_helper(self.usernames[1])
+        self.assertEqual(username, self.usernames[1])
+        self.assertEqual(attr.find(self.cas + 'login').text.strip(), self.usernames[1])
+        self.assertEqual(attr.find(self.cas + 'zjhm').text.strip(), self.usernames[1])
+        self.client.logout()
+        username, attr = self.login_helper(self.usernames[2])
+        self.assertEqual(username, self.usernames[2])
+        self.assertEqual(attr.find(self.cas + 'login').text.strip(), self.usernames[2])
+        self.assertEqual(attr.find(self.cas + 'zjhm').text.strip(), self.usernames[2])
+        self.client.logout()
