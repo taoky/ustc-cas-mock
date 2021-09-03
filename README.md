@@ -71,3 +71,11 @@ $ python manage.py createsuperuser
 ```
 
 然后可以使用创建的 superuser 登录 `/admin` 进行配置。需要注意，在添加用户后，还需要编辑用户，添加学号信息（学号值和顺序）。
+
+当然，如果懒得配置，也可以在 cas 目录里直接：
+
+```
+$ curl -L https://github.com/taoky/ustc-cas-mock/releases/download/v0.1/test.sql | sqlite3 db.sqlite3
+```
+
+superuser 的 username/password 为 test/test。请注意在修改密码前确保服务仅本地可访问。
