@@ -79,3 +79,7 @@ $ curl -L https://github.com/taoky/ustc-cas-mock/releases/download/v0.1/test.sql
 ```
 
 superuser 的 username/password 为 test/test。请注意在修改密码前确保服务仅本地可访问。
+
+### Docker
+
+`docker pull ghcr.io/taoky/ustc-cas-mock:dev-only`，然后参考 `docker` 目录下的 `run-dev.sh` 执行即可。
