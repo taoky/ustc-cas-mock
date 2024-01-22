@@ -1,0 +1,23 @@
+name: Build and Push to ghcr
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: |
+        cd docker
+        ./build-dev.sh
+    - name: Login to ghcr
+      uses: docker/login-action@v3
+      with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push
+      run: docker push ghcr.io/taoky/ustc-cas-mock:dev-only
