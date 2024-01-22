@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-=i%gf2u(y#-66x3949j!+%udhg7if)d=(3wv21sn7&n#fg#bn1
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+SESSION_COOKIE_NAME="ustc-cas-mock-sessionid"
 
 # Application definition
 
