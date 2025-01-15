@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -137,3 +138,4 @@ MAMA_CAS_SERVICES = [
         "CALLBACKS": ('users.cas.custom_attributes',)
     }
 ]
+MAMA_CAS_USE_NONSTANDARD_ATTRIBUTES = os.environ.get("MOCK_OLD_CAS", "0") == "1"

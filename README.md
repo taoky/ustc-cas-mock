@@ -14,6 +14,10 @@
 
 没有测试过 proxy ticket。（因为我用不到，我也不知道怎么改）
 
+## Breaking Changes
+
+2025-01-16：如果需要 mock 旧版本 USTC CAS（passport.ustc.edu.cn），启动时需要设置环境变量 `MOCK_OLD_CAS=1`，否则 mock 新版本（id.ustc.edu.cn）。
+
 ## Why?
 
 USTCCAS 比较特别的一点是，用户可以用不同的用户名登录：GID 可以，学号也可以，并且学号可以是自入学以来所有的学号。在开发时，很多同学都不会注意这件事情，这会导致一个人可以用多个不同的「身份」登录系统（并且在科大呆的时间越长，身份的数量就越多），往往是非预期的。
@@ -26,9 +30,9 @@ USTCCAS 比较特别的一点是，用户可以用不同的用户名登录：GID
 
 本仓库的逻辑是返回 CAS 能够返回的所有的信息，但是实际上，USTCCAS 在未申请权限的情况下只会返回最基本的信息：GID 和登录用的用户名，这一点需要特别注意。
 
-此外，在 attributes 的处理上，USTCCAS 和 CAS 3.0 标准不完全一致：
+此外，在 attributes 的处理上，旧 USTCCAS 和 CAS 3.0 标准不完全一致：
 
-USTCCAS 类似于下面这样:
+旧 USTCCAS 类似于下面这样:
 
 ```xml
 <cas:serviceResponse xmlns:cas="http://www.yale.edu/tp/cas">
@@ -54,7 +58,7 @@ USTCCAS 类似于下面这样:
 </cas:serviceResponse>
 ```
 
-USTCCAS 的 attributes 是 `attributes` 而不是 `cas:attributes`。
+旧 USTCCAS 的 attributes 是 `attributes` 而不是 `cas:attributes`。
 
 此外：
 
