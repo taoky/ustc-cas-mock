@@ -1,7 +1,7 @@
 FROM alpine:3.15
 
 # Install Python3 and necessary deps
-RUN apk add --no-cache python3 py3-pip sqlite curl git
+RUN apk add --no-cache python3 py3-pip sqlite curl git tzdata
 # Add requirements.txt
 ADD ./requirements.txt /tmp/
 # Install deps
