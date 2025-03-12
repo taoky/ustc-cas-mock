@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MOCK_OLD_CAS=${MOCK_OLD_CAS:-1}
+MOCK_OLD_CAS=${MOCK_OLD_CAS:-0}
 
 docker run -e MOCK_OLD_CAS=$MOCK_OLD_CAS --network host --name ustc-cas-mock --rm ghcr.io/taoky/ustc-cas-mock:dev-only
 
